@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/softwarica-github/t2-backend-api-elwyncrestha/issues"
   },
-  "homepage": "https://github.com/softwarica-github/t2-backend-api-elwyncrestha#readme"
+  "homepage": "https://github.com/softwarica-github/t2-backend-api-elwyncrestha#readme",
+  "dependencies": {
+    "mongoose": "^5.8.11"
+  }
 }
