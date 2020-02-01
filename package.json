@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/softwarica-github/t2-backend-api-elwyncrestha#readme",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "mongoose": "^5.8.11"
   }
