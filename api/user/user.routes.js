@@ -1,6 +1,8 @@
 const express = require("express");
 const User = require("./user.model");
 const auth = require("../../config/auth/jwt.auth");
+const mailer = require("../../config/mail/nodemailer");
+const NumberUtils = require("../../utils/number.utils");
 
 const router = express.Router();
 
@@ -72,6 +74,57 @@ router.get(`${URL}/logout/all`, auth, async (req, res) => {
     await req.user.save();
     res.send();
   } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+/**
+ * Initiate user password reset by an email address.
+ */
+router.get(`${URL}/reset-password/email/:value`, async (req, res) => {
+  try {
+    const email = req.params.value;
+    const user = await User.findByEmail(email);
+    if (!user) {
+      return res.status(400).send({ error: "User not found" });
+    }
+    const token = NumberUtils.generateRandom(1000, 9999);
+    user.resetToken = token;
+    await user.save();
+    // send mail with reset token.
+    mailer.sendMail(
+      email,
+      "Reset Password",
+      `Use this token: ${token} to reset your password`
+    );
+    res.send({ user });
+  } catch (error) {
+    console.error(error);
+    res.status(400).send(error);
+  }
+});
+
+/**
+ * Reset user password.
+ * @param `email`, `token`, `password`
+ */
+router.post(`${URL}/reset-password`, async (req, res) => {
+  try {
+    const email = req.body.email;
+    const token = req.body.token;
+    const password = req.body.password;
+
+    const user = await User.findByEmail(email);
+    if (user.resetToken !== token) {
+      return res.status(401).send({ error: "Token did not match" });
+    }
+
+    user.resetToken = null;
+    user.password = password;
+    await user.save();
+    res.send();
+  } catch (error) {
+    console.error(error);
     res.status(500).send(error);
   }
 });

@@ -47,7 +47,10 @@ const userSchema = mongoose.Schema({
         required: true
       }
     }
-  ]
+  ],
+  resetToken: {
+    type: String
+  }
 });
 
 /**
@@ -83,6 +86,17 @@ userSchema.statics.findByCredentials = async (username, password) => {
   const isPasswordMatch = await bcrypt.compare(password, user.password);
   if (!isPasswordMatch) {
     throw new Error({ error: "Invalid login credentials" });
+  }
+  return user;
+};
+
+/**
+ * Search for a user by an email.
+ */
+userSchema.statics.findByEmail = async email => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new Error({ error: "User not found" });
   }
   return user;
 };
