@@ -14,7 +14,7 @@ const expenseSchema = mongoose.Schema({
     required: true,
     trim: true
   },
-  payee: {
+  payeeOrPayer: {
     type: String,
     required: true
   },
