@@ -93,4 +93,17 @@ router.get(`${URL}/list`, auth, async (req, res) => {
   }
 });
 
+router.get(`${URL}/status-count`, auth, async (req, res) => {
+  try {
+    const expenseCount = await Category.countDocuments({ type: 0 });
+    const incomeCount = await Category.countDocuments({ type: 1 });
+    res.status(200).send({
+      detail: { incomeCount: incomeCount, expenseCount: expenseCount }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(400).send({ error: error });
+  }
+});
+
 module.exports = router;
