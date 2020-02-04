@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const userRouter = require("./api/user/user.routes");
+const categoryRouter = require("./api/category/category.routes");
 require("dotenv/config");
 require("./config/db/mongo");
 
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use(userRouter);
+app.use(categoryRouter);
 
 // Server
 app.listen(port, () => {
