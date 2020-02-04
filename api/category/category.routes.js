@@ -26,8 +26,8 @@ router.post(`${URL}`, auth, async (req, res) => {
  */
 router.patch(`${URL}`, auth, async (req, res) => {
   try {
-    const id = req.body._id;
-    const category = await Category.findOneAndUpdate(id, req.body);
+    const id = req.body.id;
+    const category = await Category.findByIdAndUpdate(id, req.body);
     res.status(200).send({ detail: category });
   } catch (error) {
     console.error(error);
