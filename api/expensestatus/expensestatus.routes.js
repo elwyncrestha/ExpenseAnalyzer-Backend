@@ -13,11 +13,11 @@ const URL = "/v1/expense-status";
 router.post(`${URL}`, auth, async (req, res) => {
   try {
     const expenseStatus = new ExpenseStatus(req.body);
-    await expenseStatus.save();
-    res.status(201).send({ expenseStatus: expenseStatus });
+    const saved = await expenseStatus.save();
+    res.status(201).send({ detail: saved });
   } catch (error) {
-    console.log(error);
-    res.status(400).send(error);
+    console.error(error);
+    res.status(400).send({ error: error });
   }
 });
 
@@ -28,10 +28,10 @@ router.patch(`${URL}`, auth, async (req, res) => {
   try {
     const id = req.body._id;
     const expenseStatus = await ExpenseStatus.findOneAndUpdate(id, req.body);
-    res.status(200).send({ expenseStatus: expenseStatus });
+    res.status(200).send({ detail: expenseStatus });
   } catch (error) {
     console.error(error);
-    res.status(400).send(error);
+    res.status(400).send({ error: error });
   }
 });
 
@@ -40,11 +40,11 @@ router.patch(`${URL}`, auth, async (req, res) => {
  */
 router.get(`${URL}/all`, auth, async (req, res) => {
   try {
-    const expenseStatus = await ExpenseStatus.find({});
-    res.status(200).send({ expenseStatus: expenseStatus });
+    const expenseStatus = await ExpenseStatus.find();
+    res.status(200).send({ detail: expenseStatus });
   } catch (error) {
     console.error(error);
-    res.status(400).send(error);
+    res.status(400).send({ error: error });
   }
 });
 
@@ -63,10 +63,10 @@ router.delete(`${URL}/:id`, auth, async (req, res) => {
     if (!obj) {
       return res.status(404).send();
     }
-    res.status(200).send(obj);
+    res.status(200).send({ detail: obj });
   } catch (error) {
     console.error(error);
-    res.status(500).send();
+    res.status(500).send({ error: error });
   }
 });
 
@@ -82,10 +82,10 @@ router.get(`${URL}/list`, auth, async (req, res) => {
     const expenseStatus = await ExpenseStatus.find()
       .skip(skips)
       .limit(Number(size));
-    res.status(200).send({ expenseStatus: expenseStatus });
+    res.status(200).send({ detail: expenseStatus });
   } catch (error) {
     console.error(error);
-    res.status(400).send(error);
+    res.status(400).send({ error: error });
   }
 });
 
