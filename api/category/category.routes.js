@@ -1,6 +1,7 @@
 const express = require("express");
 const Category = require("./category.model");
 const auth = require("../../config/auth/jwt.auth");
+const { ObjectID } = require("mongodb");
 
 const router = express.Router();
 
@@ -44,6 +45,28 @@ router.get(`${URL}/all`, auth, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(400).send(error);
+  }
+});
+
+/**
+ * Delete a category
+ */
+router.delete(`${URL}/:id`, auth, async (req, res) => {
+  const id = req.params.id;
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+  try {
+    const obj = await Category.findOneAndDelete({
+      _id: id
+    });
+    if (!obj) {
+      return res.status(404).send();
+    }
+    res.status(200).send(obj);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send();
   }
 });
 
