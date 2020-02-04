@@ -73,4 +73,23 @@ router.delete(`${URL}/:id`, auth, async (req, res) => {
   }
 });
 
+/**
+ * Get Pageable of Expenses.
+ * @param `page`, `size` request parameters.
+ */
+router.get(`${URL}/list`, auth, async (req, res) => {
+  const page = req.query.page;
+  const size = req.query.size;
+  const skips = size * (page - 1);
+  try {
+    const expenses = await Expense.find()
+      .skip(skips)
+      .limit(Number(size));
+    res.status(200).send({ expenses: expenses });
+  } catch (error) {
+    console.error(error);
+    res.status(400).send(error);
+  }
+});
+
 module.exports = router;

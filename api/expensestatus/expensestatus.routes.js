@@ -70,4 +70,23 @@ router.delete(`${URL}/:id`, auth, async (req, res) => {
   }
 });
 
+/**
+ * Get Pageable of Expense Status.
+ * @param `page`, `size` request parameters.
+ */
+router.get(`${URL}/list`, auth, async (req, res) => {
+  const page = req.query.page;
+  const size = req.query.size;
+  const skips = size * (page - 1);
+  try {
+    const expenseStatus = await ExpenseStatus.find()
+      .skip(skips)
+      .limit(Number(size));
+    res.status(200).send({ expenseStatus: expenseStatus });
+  } catch (error) {
+    console.error(error);
+    res.status(400).send(error);
+  }
+});
+
 module.exports = router;
