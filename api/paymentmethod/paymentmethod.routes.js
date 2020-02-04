@@ -13,11 +13,11 @@ const URL = "/v1/payment-method";
 router.post(`${URL}`, auth, async (req, res) => {
   try {
     const paymentMethod = new PaymentMethod(req.body);
-    await paymentMethod.save();
-    res.status(201).send({ paymentMethod: paymentMethod });
+    const saved = await paymentMethod.save();
+    res.status(201).send({ detail: saved });
   } catch (error) {
-    console.log(error);
-    res.status(400).send(error);
+    console.error(error);
+    res.status(400).send({ error: error });
   }
 });
 
@@ -28,10 +28,10 @@ router.patch(`${URL}`, auth, async (req, res) => {
   try {
     const id = req.body._id;
     const paymentMethod = await PaymentMethod.findOneAndUpdate(id, req.body);
-    res.status(200).send({ paymentMethod: paymentMethod });
+    res.status(200).send({ detail: paymentMethod });
   } catch (error) {
     console.error(error);
-    res.status(400).send(error);
+    res.status(400).send({ error: error });
   }
 });
 
@@ -41,10 +41,10 @@ router.patch(`${URL}`, auth, async (req, res) => {
 router.get(`${URL}/all`, auth, async (req, res) => {
   try {
     const paymentMethods = await PaymentMethod.find({});
-    res.status(200).send({ paymentMethods: paymentMethods });
+    res.status(200).send({ detail: paymentMethods });
   } catch (error) {
     console.error(error);
-    res.status(400).send(error);
+    res.status(400).send({ error: error });
   }
 });
 
@@ -63,10 +63,10 @@ router.delete(`${URL}/:id`, auth, async (req, res) => {
     if (!obj) {
       return res.status(404).send();
     }
-    res.status(200).send(obj);
+    res.status(200).send({ detail: obj });
   } catch (error) {
     console.error(error);
-    res.status(500).send();
+    res.status(500).send({ error: error });
   }
 });
 
@@ -82,10 +82,10 @@ router.get(`${URL}/list`, auth, async (req, res) => {
     const paymentMethods = await PaymentMethod.find()
       .skip(skips)
       .limit(Number(size));
-    res.status(200).send({ paymentMethods: paymentMethods });
+    res.status(200).send({ detail: paymentMethods });
   } catch (error) {
     console.error(error);
-    res.status(400).send(error);
+    res.status(400).send({ error: error });
   }
 });
 
