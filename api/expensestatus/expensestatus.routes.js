@@ -27,7 +27,7 @@ router.post(`${URL}`, auth, async (req, res) => {
 router.patch(`${URL}`, auth, async (req, res) => {
   try {
     const id = req.body._id;
-    const expenseStatus = await ExpenseStatus.findOneAndUpdate(id, req.body);
+    const expenseStatus = await ExpenseStatus.findByIdAndUpdate(id, req.body);
     res.status(200).send({ detail: expenseStatus });
   } catch (error) {
     console.error(error);
