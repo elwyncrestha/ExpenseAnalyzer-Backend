@@ -3,55 +3,58 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const userSchema = mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  middleName: {
-    type: String,
-    trim: true
-  },
-  lastName: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    validate: value => {
-      if (!validator.isEmail(value)) {
-        throw new Error({ error: "Invalid email address" });
+const userSchema = mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    middleName: {
+      type: String,
+      trim: true
+    },
+    lastName: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      validate: value => {
+        if (!validator.isEmail(value)) {
+          throw new Error({ error: "Invalid email address" });
+        }
       }
+    },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true
+    },
+    password: {
+      type: String,
+      required: true,
+      minLength: 8
+    },
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true
+        }
+      }
+    ],
+    resetToken: {
+      type: String
     }
   },
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true
-  },
-  password: {
-    type: String,
-    required: true,
-    minLength: 8
-  },
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true
-      }
-    }
-  ],
-  resetToken: {
-    type: String
-  }
-});
+  { timestamps: true }
+);
 
 /**
  * Hash the password before saving the user model.
