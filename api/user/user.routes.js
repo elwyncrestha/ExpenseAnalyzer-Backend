@@ -129,4 +129,18 @@ router.post(`${URL}/reset-password`, async (req, res) => {
   }
 });
 
+/**
+ * Update an user.
+ */
+router.patch(`${URL}`, async (req, res) => {
+  try {
+    const id = req.body._id;
+    const user = await User.findOneAndUpdate({ _id: id }, req.body);
+    res.status(200).send({ user });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
+});
+
 module.exports = router;
