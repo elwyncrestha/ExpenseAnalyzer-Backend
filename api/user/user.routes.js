@@ -14,12 +14,12 @@ const URL = "/v1/users";
 router.post(`${URL}`, async (req, res) => {
   try {
     const user = new User(req.body);
-    await user.save();
+    const saved = await user.save();
     const token = await user.generateAuthToken();
-    res.status(201).send({ user, token });
+    res.status(201).send({ detail: { user, token } });
   } catch (error) {
-    console.log(error);
-    res.status(400).send(error);
+    console.error(error);
+    res.status(400).send({ error: error });
   }
 });
 
@@ -36,10 +36,10 @@ router.post(`${URL}/login`, async (req, res) => {
         .send({ error: "Login failed! Check authentication credentials" });
     }
     const token = await user.generateAuthToken();
-    res.send({ token: token });
+    res.send({ detail: token });
   } catch (error) {
     console.error(error);
-    res.status(400).send(error);
+    res.status(400).send({ error: error });
   }
 });
 
@@ -47,7 +47,7 @@ router.post(`${URL}/login`, async (req, res) => {
  * Get logged-in user profile.
  */
 router.get(`${URL}/authenticated`, auth, async (req, res) => {
-  res.send(req.user);
+  res.send({ detail: req.user });
 });
 
 /**
@@ -61,7 +61,8 @@ router.get(`${URL}/logout`, auth, async (req, res) => {
     await req.user.save();
     res.send();
   } catch (error) {
-    res.status(500).send(error);
+    console.error(error);
+    res.status(500).send({ error: error });
   }
 });
 
@@ -74,7 +75,8 @@ router.get(`${URL}/logout/all`, auth, async (req, res) => {
     await req.user.save();
     res.send();
   } catch (error) {
-    res.status(500).send(error);
+    console.error(error);
+    res.status(500).send({ error: error });
   }
 });
 
@@ -97,10 +99,10 @@ router.get(`${URL}/reset-password/email/:value`, async (req, res) => {
       "Reset Password",
       `Use this token: ${token} to reset your password`
     );
-    res.send({ user });
+    res.send({ detail: user });
   } catch (error) {
     console.error(error);
-    res.status(400).send(error);
+    res.status(400).send({ error: error });
   }
 });
 
@@ -125,7 +127,7 @@ router.post(`${URL}/reset-password`, async (req, res) => {
     res.send();
   } catch (error) {
     console.error(error);
-    res.status(500).send(error);
+    res.status(500).send({ error: error });
   }
 });
 
@@ -136,10 +138,10 @@ router.patch(`${URL}`, async (req, res) => {
   try {
     const id = req.body._id;
     const user = await User.findOneAndUpdate({ _id: id }, req.body);
-    res.status(200).send({ user });
+    res.status(200).send({ detail: user });
   } catch (error) {
-    console.log(error);
-    res.status(400).send(error);
+    console.error(error);
+    res.status(400).send({ error: error });
   }
 });
 

@@ -13,11 +13,11 @@ const URL = "/v1/category";
 router.post(`${URL}`, auth, async (req, res) => {
   try {
     const category = new Category(req.body);
-    await category.save();
-    res.status(201).send({ category });
+    const saved = await category.save();
+    res.status(201).send({ detail: saved });
   } catch (error) {
-    console.log(error);
-    res.status(400).send(error);
+    console.error(error);
+    res.status(400).send({ error: error });
   }
 });
 
@@ -28,10 +28,10 @@ router.patch(`${URL}`, auth, async (req, res) => {
   try {
     const id = req.body._id;
     const category = await Category.findOneAndUpdate(id, req.body);
-    res.status(200).send({ category });
+    res.status(200).send({ detail: category });
   } catch (error) {
     console.error(error);
-    res.status(400).send(error);
+    res.status(400).send({ error: error });
   }
 });
 
@@ -40,11 +40,11 @@ router.patch(`${URL}`, auth, async (req, res) => {
  */
 router.get(`${URL}/all`, auth, async (req, res) => {
   try {
-    const categories = await Category.find({});
-    res.status(200).send({ categories });
+    const categories = await Category.find();
+    res.status(200).send({ detail: categories });
   } catch (error) {
     console.error(error);
-    res.status(400).send(error);
+    res.status(400).send({ error: error });
   }
 });
 
@@ -57,16 +57,14 @@ router.delete(`${URL}/:id`, auth, async (req, res) => {
     return res.status(404).send();
   }
   try {
-    const obj = await Category.findOneAndDelete({
-      _id: id
-    });
+    const obj = await Category.findOneAndDelete({ _id: id });
     if (!obj) {
       return res.status(404).send();
     }
-    res.status(200).send(obj);
+    res.status(200).send({ detail: obj });
   } catch (error) {
     console.error(error);
-    res.status(500).send();
+    res.status(500).send({ error: error });
   }
 });
 
@@ -82,10 +80,10 @@ router.get(`${URL}/list`, auth, async (req, res) => {
     const categories = await Category.find()
       .skip(skips)
       .limit(Number(size));
-    res.status(200).send({ categories: categories });
+    res.status(200).send({ detail: categories });
   } catch (error) {
     console.error(error);
-    res.status(400).send(error);
+    res.status(400).send({ error: error });
   }
 });
 
