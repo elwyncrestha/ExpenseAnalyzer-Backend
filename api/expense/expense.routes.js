@@ -13,11 +13,11 @@ const URL = "/v1/expense";
 router.post(`${URL}`, auth, async (req, res) => {
   try {
     const expense = new Expense(req.body);
-    await expense.save();
-    res.status(201).send({ expense: expense });
+    const saved = await expense.save();
+    res.status(201).send({ detail: saved });
   } catch (error) {
-    console.log(error);
-    res.status(400).send(error);
+    console.error(error);
+    res.status(400).send({ error: error });
   }
 });
 
@@ -28,10 +28,10 @@ router.patch(`${URL}`, auth, async (req, res) => {
   try {
     const id = req.body._id;
     const expense = await Expense.findOneAndUpdate(id, req.body);
-    res.status(200).send({ expense: expense });
+    res.status(200).send({ detail: expense });
   } catch (error) {
     console.error(error);
-    res.status(400).send(error);
+    res.status(400).send({ error: error });
   }
 });
 
@@ -40,14 +40,14 @@ router.patch(`${URL}`, auth, async (req, res) => {
  */
 router.get(`${URL}/all`, auth, async (req, res) => {
   try {
-    const expenses = await Expense.find({})
+    const expenses = await Expense.find()
       .populate("category")
       .populate("paymentMethod")
       .populate("status");
-    res.status(200).send({ expenses: expenses });
+    res.status(200).send({ detail: expenses });
   } catch (error) {
     console.error(error);
-    res.status(400).send(error);
+    res.status(400).send({ error: error });
   }
 });
 
@@ -66,10 +66,10 @@ router.delete(`${URL}/:id`, auth, async (req, res) => {
     if (!obj) {
       return res.status(404).send();
     }
-    res.status(200).send(obj);
+    res.status(200).send({ detail: obj });
   } catch (error) {
     console.error(error);
-    res.status(500).send();
+    res.status(500).send({ error: error });
   }
 });
 
@@ -85,10 +85,10 @@ router.get(`${URL}/list`, auth, async (req, res) => {
     const expenses = await Expense.find()
       .skip(skips)
       .limit(Number(size));
-    res.status(200).send({ expenses: expenses });
+    res.status(200).send({ detail: expenses });
   } catch (error) {
     console.error(error);
-    res.status(400).send(error);
+    res.status(400).send({ error: error });
   }
 });
 
