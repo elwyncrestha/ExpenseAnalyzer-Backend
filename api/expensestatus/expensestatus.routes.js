@@ -82,7 +82,13 @@ router.get(`${URL}/list`, auth, async (req, res) => {
     const expenseStatus = await ExpenseStatus.find()
       .skip(skips)
       .limit(Number(size));
-    res.status(200).send({ detail: expenseStatus });
+    const totalElementsCount = await ExpenseStatus.countDocuments();
+    res.status(200).send({
+      detail: {
+        content: expenseStatus,
+        totalElements: totalElementsCount
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(400).send({ error: error });

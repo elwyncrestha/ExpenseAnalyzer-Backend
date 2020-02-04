@@ -82,7 +82,13 @@ router.get(`${URL}/list`, auth, async (req, res) => {
     const paymentMethods = await PaymentMethod.find()
       .skip(skips)
       .limit(Number(size));
-    res.status(200).send({ detail: paymentMethods });
+    const totalElementsCount = await PaymentMethod.countDocuments();
+    res.status(200).send({
+      detail: {
+        content: paymentMethods,
+        totalElements: totalElementsCount
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(400).send({ error: error });
