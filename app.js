@@ -3,6 +3,7 @@ const cors = require("cors");
 const userRouter = require("./api/user/user.routes");
 const categoryRouter = require("./api/category/category.routes");
 const paymentMethodRouter = require("./api/paymentmethod/paymentmethod.routes");
+const expenseStatusRouter = require("./api/expensestatus/expensestatus.routes");
 require("dotenv/config");
 require("./config/db/mongo");
 
@@ -19,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(userRouter);
 app.use(categoryRouter);
 app.use(paymentMethodRouter);
+app.use(expenseStatusRouter);
 
 // Server
 app.listen(port, () => {
