@@ -2,6 +2,7 @@ const express = require("express");
 const PaymentMethod = require("./paymentmethod.model");
 const auth = require("../../config/auth/jwt.auth");
 const { ObjectID } = require("mongodb");
+const audit = require("../../config/audit/createdby.audit");
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ const URL = "/v1/payment-method";
 /**
  * Save new payment method.
  */
-router.post(`${URL}`, auth, async (req, res) => {
+router.post(`${URL}`, auth, audit, async (req, res) => {
   try {
     const paymentMethod = new PaymentMethod(req.body);
     const saved = await paymentMethod.save();

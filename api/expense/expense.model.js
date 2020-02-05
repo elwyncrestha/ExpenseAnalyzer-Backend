@@ -41,6 +41,10 @@ const expenseSchema = mongoose.Schema(
           throw new Error({ error: "Invalid expense type" });
         }
       }
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
     }
   },
   { timestamps: true }

@@ -6,6 +6,10 @@ const expensestatusSchema = mongoose.Schema(
       type: String,
       required: true,
       trim: true
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
     }
   },
   { timestamps: true }
