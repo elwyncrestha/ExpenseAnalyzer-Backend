@@ -50,6 +50,19 @@ router.get(`${URL}/all`, auth, async (req, res) => {
 });
 
 /**
+ * Get all categories with search.
+ */
+router.post(`${URL}/all`, auth, async (req, res) => {
+  try {
+    const categories = await Category.find(req.body);
+    res.status(200).send({ detail: categories });
+  } catch (error) {
+    console.error(error);
+    res.status(400).send({ error: error });
+  }
+});
+
+/**
  * Delete a category
  */
 router.delete(`${URL}/:id`, auth, async (req, res) => {
