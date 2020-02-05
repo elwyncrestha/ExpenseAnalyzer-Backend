@@ -26,7 +26,7 @@ router.post(`${URL}`, auth, async (req, res) => {
  */
 router.patch(`${URL}`, auth, async (req, res) => {
   try {
-    const id = req.body._id;
+    const id = req.body.id;
     const paymentMethod = await PaymentMethod.findByIdAndUpdate(id, req.body);
     res.status(200).send({ detail: paymentMethod });
   } catch (error) {
