@@ -95,4 +95,19 @@ router.get(`${URL}/list`, auth, async (req, res) => {
   }
 });
 
+/**
+ * Get status count of payment methods.
+ */
+router.get(`${URL}/status-count`, auth, async (req, res) => {
+  try {
+    const totalCount = await PaymentMethod.countDocuments();
+    res.status(200).send({
+      detail: { totalCount: totalCount }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(400).send({ error: error });
+  }
+});
+
 module.exports = router;
