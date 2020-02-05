@@ -83,7 +83,9 @@ router.get(`${URL}/list`, auth, async (req, res) => {
     const expenseStatus = await ExpenseStatus.find({ createdBy: req.user._id })
       .skip(skips)
       .limit(Number(size));
-    const totalElementsCount = await ExpenseStatus.countDocuments();
+    const totalElementsCount = await ExpenseStatus.countDocuments({
+      createdBy: req.user._id
+    });
     res.status(200).send({
       detail: {
         content: expenseStatus,

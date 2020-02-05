@@ -97,7 +97,9 @@ router.get(`${URL}/list`, auth, async (req, res) => {
     const categories = await Category.find({ createdBy: req.user._id })
       .skip(skips)
       .limit(Number(size));
-    const totalElementsCount = await Category.countDocuments();
+    const totalElementsCount = await Category.countDocuments({
+      createdBy: req.user._id
+    });
     res.status(200).send({
       detail: {
         content: categories,

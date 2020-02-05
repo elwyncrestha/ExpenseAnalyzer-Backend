@@ -89,7 +89,9 @@ router.get(`${URL}/list`, auth, async (req, res) => {
       .populate("category")
       .populate("paymentMethod")
       .populate("status");
-    const totalElementsCount = await Expense.countDocuments();
+    const totalElementsCount = await Expense.countDocuments({
+      createdBy: req.user._id
+    });
     res.status(200).send({
       detail: {
         content: expenses,
@@ -124,6 +126,28 @@ router.get(`${URL}/status-count`, auth, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(400).send({ error: error });
+  }
+});
+
+/**
+ * Get data for transaction duration charts.
+ */
+router.get(`${URL}/chart/transaction-duration`, auth, async (req, res) => {
+  try {
+    const incomeToday = await Expense.aggregate([
+      {
+        $group: {
+          _id: { type: 1 },
+          totalAmount: {
+            $sum: "$amount"
+          }
+        }
+      }
+    ]);
+    res.send(incomeToday);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: error });
   }
 });
 

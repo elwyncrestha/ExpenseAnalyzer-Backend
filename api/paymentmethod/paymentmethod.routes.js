@@ -85,7 +85,9 @@ router.get(`${URL}/list`, auth, async (req, res) => {
     const paymentMethods = await PaymentMethod.find({ createdBy: req.user._id })
       .skip(skips)
       .limit(Number(size));
-    const totalElementsCount = await PaymentMethod.countDocuments();
+    const totalElementsCount = await PaymentMethod.countDocuments({
+      createdBy: req.user._id
+    });
     res.status(200).send({
       detail: {
         content: paymentMethods,
