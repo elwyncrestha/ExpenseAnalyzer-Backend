@@ -33,6 +33,14 @@ const expenseSchema = mongoose.Schema(
     },
     description: {
       type: String
+    },
+    type: {
+      type: Number, // 0 = Expense, 1 = Income
+      validate: value => {
+        if (value != 0 && value !== 1) {
+          throw new Error({ error: "Invalid expense type" });
+        }
+      }
     }
   },
   { timestamps: true }

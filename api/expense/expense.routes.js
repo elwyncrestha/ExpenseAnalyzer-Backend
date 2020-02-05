@@ -2,6 +2,7 @@ const express = require("express");
 const Expense = require("./expense.model");
 const auth = require("../../config/auth/jwt.auth");
 const { ObjectID } = require("mongodb");
+const Category = require("../category/category.model");
 
 const router = express.Router();
 
@@ -84,12 +85,34 @@ router.get(`${URL}/list`, auth, async (req, res) => {
   try {
     const expenses = await Expense.find()
       .skip(skips)
-      .limit(Number(size));
+      .limit(Number(size))
+      .populate("category")
+      .populate("paymentMethod")
+      .populate("status");
     const totalElementsCount = await Expense.countDocuments();
     res.status(200).send({
       detail: {
         content: expenses,
         totalElements: totalElementsCount
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(400).send({ error: error });
+  }
+});
+
+/**
+ * Get status count of expenses.
+ */
+router.get(`${URL}/status-count`, auth, async (req, res) => {
+  try {
+    const incomeTransactions = await Expense.countDocuments({ type: 1 });
+    const expenseTransactions = await Expense.countDocuments({ type: 0 });
+    res.status(200).send({
+      detail: {
+        incomeCount: incomeTransactions,
+        expenseCount: expenseTransactions
       }
     });
   } catch (error) {
