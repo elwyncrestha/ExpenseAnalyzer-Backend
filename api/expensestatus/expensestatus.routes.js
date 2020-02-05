@@ -41,7 +41,7 @@ router.patch(`${URL}`, auth, async (req, res) => {
  */
 router.get(`${URL}/all`, auth, async (req, res) => {
   try {
-    const expenseStatus = await ExpenseStatus.find();
+    const expenseStatus = await ExpenseStatus.find({ createdBy: req.user._id });
     res.status(200).send({ detail: expenseStatus });
   } catch (error) {
     console.error(error);
@@ -80,7 +80,7 @@ router.get(`${URL}/list`, auth, async (req, res) => {
   const size = req.query.size;
   const skips = size * (page - 1);
   try {
-    const expenseStatus = await ExpenseStatus.find()
+    const expenseStatus = await ExpenseStatus.find({ createdBy: req.user._id })
       .skip(skips)
       .limit(Number(size));
     const totalElementsCount = await ExpenseStatus.countDocuments();
@@ -101,7 +101,9 @@ router.get(`${URL}/list`, auth, async (req, res) => {
  */
 router.get(`${URL}/status-count`, auth, async (req, res) => {
   try {
-    const totalCount = await ExpenseStatus.countDocuments();
+    const totalCount = await ExpenseStatus.countDocuments({
+      createdBy: req.user._id
+    });
     res.status(200).send({
       detail: { totalCount: totalCount }
     });

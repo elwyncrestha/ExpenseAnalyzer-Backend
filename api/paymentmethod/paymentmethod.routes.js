@@ -41,7 +41,9 @@ router.patch(`${URL}`, auth, async (req, res) => {
  */
 router.get(`${URL}/all`, auth, async (req, res) => {
   try {
-    const paymentMethods = await PaymentMethod.find({});
+    const paymentMethods = await PaymentMethod.find({
+      createdBy: req.user._id
+    });
     res.status(200).send({ detail: paymentMethods });
   } catch (error) {
     console.error(error);
@@ -80,7 +82,7 @@ router.get(`${URL}/list`, auth, async (req, res) => {
   const size = req.query.size;
   const skips = size * (page - 1);
   try {
-    const paymentMethods = await PaymentMethod.find()
+    const paymentMethods = await PaymentMethod.find({ createdBy: req.user._id })
       .skip(skips)
       .limit(Number(size));
     const totalElementsCount = await PaymentMethod.countDocuments();
@@ -101,7 +103,9 @@ router.get(`${URL}/list`, auth, async (req, res) => {
  */
 router.get(`${URL}/status-count`, auth, async (req, res) => {
   try {
-    const totalCount = await PaymentMethod.countDocuments();
+    const totalCount = await PaymentMethod.countDocuments({
+      createdBy: req.user._id
+    });
     res.status(200).send({
       detail: { totalCount: totalCount }
     });
