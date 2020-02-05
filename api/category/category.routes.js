@@ -2,6 +2,7 @@ const express = require("express");
 const Category = require("./category.model");
 const auth = require("../../config/auth/jwt.auth");
 const { ObjectID } = require("mongodb");
+const audit = require("../../config/audit/createdby.audit");
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ const URL = "/v1/category";
 /**
  * Save new category.
  */
-router.post(`${URL}`, auth, async (req, res) => {
+router.post(`${URL}`, auth, audit, async (req, res) => {
   try {
     const category = new Category(req.body);
     const saved = await category.save();

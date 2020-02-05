@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const validator = require("validator");
 
 const categorySchema = mongoose.Schema(
   {
@@ -15,6 +14,10 @@ const categorySchema = mongoose.Schema(
           throw new Error({ error: "Invalid category type" });
         }
       }
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
     }
   },
   { timestamps: true }

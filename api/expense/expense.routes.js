@@ -2,7 +2,7 @@ const express = require("express");
 const Expense = require("./expense.model");
 const auth = require("../../config/auth/jwt.auth");
 const { ObjectID } = require("mongodb");
-const Category = require("../category/category.model");
+const audit = require("../../config/audit/createdby.audit");
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ const URL = "/v1/expense";
 /**
  * Save new expense.
  */
-router.post(`${URL}`, auth, async (req, res) => {
+router.post(`${URL}`, auth, audit, async (req, res) => {
   try {
     const expense = new Expense(req.body);
     const saved = await expense.save();
