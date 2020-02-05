@@ -137,7 +137,7 @@ router.get(`${URL}/chart/transaction-duration`, auth, async (req, res) => {
     const incomeToday = await Expense.aggregate([
       {
         $group: {
-          _id: { type: 1 },
+          _id: null,
           totalAmount: {
             $sum: "$amount"
           }
