@@ -41,7 +41,7 @@ router.patch(`${URL}`, auth, async (req, res) => {
  */
 router.get(`${URL}/all`, auth, async (req, res) => {
   try {
-    const categories = await Category.find();
+    const categories = await Category.find({ createdBy: req.user._id });
     res.status(200).send({ detail: categories });
   } catch (error) {
     console.error(error);
@@ -54,7 +54,10 @@ router.get(`${URL}/all`, auth, async (req, res) => {
  */
 router.post(`${URL}/all`, auth, async (req, res) => {
   try {
-    const categories = await Category.find(req.body);
+    const categories = await Category.find({
+      createdBy: req.user._id,
+      ...req.body
+    });
     res.status(200).send({ detail: categories });
   } catch (error) {
     console.error(error);
@@ -91,7 +94,7 @@ router.get(`${URL}/list`, auth, async (req, res) => {
   const size = req.query.size;
   const skips = size * (page - 1);
   try {
-    const categories = await Category.find()
+    const categories = await Category.find({ createdBy: req.user._id })
       .skip(skips)
       .limit(Number(size));
     const totalElementsCount = await Category.countDocuments();
@@ -112,8 +115,14 @@ router.get(`${URL}/list`, auth, async (req, res) => {
  */
 router.get(`${URL}/status-count`, auth, async (req, res) => {
   try {
-    const expenseCount = await Category.countDocuments({ type: 0 });
-    const incomeCount = await Category.countDocuments({ type: 1 });
+    const expenseCount = await Category.countDocuments({
+      createdBy: req.user._id,
+      type: 0
+    });
+    const incomeCount = await Category.countDocuments({
+      createdBy: req.user._id,
+      type: 1
+    });
     res.status(200).send({
       detail: { incomeCount: incomeCount, expenseCount: expenseCount }
     });

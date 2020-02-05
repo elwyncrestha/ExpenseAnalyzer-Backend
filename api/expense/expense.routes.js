@@ -41,7 +41,7 @@ router.patch(`${URL}`, auth, async (req, res) => {
  */
 router.get(`${URL}/all`, auth, async (req, res) => {
   try {
-    const expenses = await Expense.find()
+    const expenses = await Expense.find({ createdBy: req.user._id })
       .populate("category")
       .populate("paymentMethod")
       .populate("status");
@@ -83,7 +83,7 @@ router.get(`${URL}/list`, auth, async (req, res) => {
   const size = req.query.size;
   const skips = size * (page - 1);
   try {
-    const expenses = await Expense.find()
+    const expenses = await Expense.find({ createdBy: req.user._id })
       .skip(skips)
       .limit(Number(size))
       .populate("category")
@@ -107,8 +107,14 @@ router.get(`${URL}/list`, auth, async (req, res) => {
  */
 router.get(`${URL}/status-count`, auth, async (req, res) => {
   try {
-    const incomeTransactions = await Expense.countDocuments({ type: 1 });
-    const expenseTransactions = await Expense.countDocuments({ type: 0 });
+    const incomeTransactions = await Expense.countDocuments({
+      createdBy: req.user._id,
+      type: 1
+    });
+    const expenseTransactions = await Expense.countDocuments({
+      createdBy: req.user._id,
+      type: 0
+    });
     res.status(200).send({
       detail: {
         incomeCount: incomeTransactions,
