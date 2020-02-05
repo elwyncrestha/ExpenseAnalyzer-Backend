@@ -93,6 +93,9 @@ router.get(`${URL}/list`, auth, async (req, res) => {
   }
 });
 
+/**
+ * Get status count of categories.
+ */
 router.get(`${URL}/status-count`, auth, async (req, res) => {
   try {
     const expenseCount = await Category.countDocuments({ type: 0 });
