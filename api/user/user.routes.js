@@ -136,8 +136,8 @@ router.post(`${URL}/reset-password`, async (req, res) => {
  */
 router.patch(`${URL}`, async (req, res) => {
   try {
-    const id = req.body._id;
-    const user = await User.findOneAndUpdate({ _id: id }, req.body);
+    const id = req.body.id;
+    const user = await User.findByIdAndUpdate(id, req.body);
     res.status(200).send({ detail: user });
   } catch (error) {
     console.error(error);

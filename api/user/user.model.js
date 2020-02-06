@@ -51,6 +51,10 @@ const userSchema = mongoose.Schema(
     ],
     resetToken: {
       type: String
+    },
+    image: {
+      type: String,
+      default: ""
     }
   },
   { timestamps: true }
