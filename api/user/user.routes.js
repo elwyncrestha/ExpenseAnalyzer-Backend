@@ -16,7 +16,7 @@ router.post(`${URL}`, async (req, res) => {
     const user = new User(req.body);
     const saved = await user.save();
     const token = await user.generateAuthToken();
-    res.status(201).send({ detail: { user, token } });
+    res.status(201).send({ detail: { saved, token } });
   } catch (error) {
     console.error(error);
     res.status(400).send({ error: error });
@@ -136,7 +136,7 @@ router.post(`${URL}/reset-password`, async (req, res) => {
  */
 router.patch(`${URL}`, async (req, res) => {
   try {
-    const id = req.body.id;
+    const id = req.body.id ? req.body.id : req.body._id;
     const user = await User.findByIdAndUpdate(id, req.body);
     res.status(200).send({ detail: user });
   } catch (error) {
