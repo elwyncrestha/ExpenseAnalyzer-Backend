@@ -134,17 +134,152 @@ router.get(`${URL}/status-count`, auth, async (req, res) => {
  */
 router.get(`${URL}/chart/transaction-duration`, auth, async (req, res) => {
   try {
-    const incomeToday = await Expense.aggregate([
-      {
-        $group: {
-          _id: null,
-          totalAmount: {
-            $sum: "$amount"
-          }
-        }
+    const expense = {
+      today: {
+        income: null,
+        expense: null
+      },
+      thisWeek: {
+        income: null,
+        expense: null
+      },
+      thisMonth: {
+        income: null,
+        expense: null
+      },
+      thisYear: {
+        income: null,
+        expense: null
       }
-    ]);
-    res.send(incomeToday);
+    };
+    const expenseFilter = {
+      createdBy: req.user._id,
+      type: 0
+    };
+    const incomeFilter = {
+      createdBy: req.user._id,
+      type: 1
+    };
+    const current = new Date();
+
+    // Today
+    expense.today.income = await Expense.find({
+      ...incomeFilter,
+      date: {
+        $eq: new Date(
+          current.getFullYear(),
+          current.getMonth(),
+          current.getDate()
+        ).toISOString()
+      }
+    });
+    expense.today.expense = await Expense.find({
+      ...expenseFilter,
+      date: {
+        $eq: new Date(
+          current.getFullYear(),
+          current.getMonth(),
+          current.getDate()
+        ).toISOString()
+      }
+    });
+
+    // This week
+    expense.thisWeek.expense = await Expense.find({
+      ...expenseFilter,
+      date: {
+        $gt: new Date(
+          current.getFullYear(),
+          current.getMonth(),
+          current.getDate() - 7
+        ).toISOString(),
+        $lte: new Date(
+          current.getFullYear(),
+          current.getMonth(),
+          current.getDate()
+        ).toISOString()
+      }
+    });
+    expense.thisWeek.income = await Expense.find({
+      ...incomeFilter,
+      date: {
+        $gt: new Date(
+          current.getFullYear(),
+          current.getMonth(),
+          current.getDate() - 7
+        ).toISOString(),
+        $lte: new Date(
+          current.getFullYear(),
+          current.getMonth(),
+          current.getDate()
+        ).toISOString()
+      }
+    });
+
+    // This month
+    expense.thisMonth.expense = await Expense.find({
+      ...expenseFilter,
+      date: {
+        $gt: new Date(
+          current.getFullYear(),
+          current.getMonth() - 1,
+          current.getDate()
+        ).toISOString(),
+        $lte: new Date(
+          current.getFullYear(),
+          current.getMonth(),
+          current.getDate()
+        ).toISOString()
+      }
+    });
+    expense.thisMonth.income = await Expense.find({
+      ...incomeFilter,
+      date: {
+        $gt: new Date(
+          current.getFullYear(),
+          current.getMonth() - 1,
+          current.getDate()
+        ).toISOString(),
+        $lte: new Date(
+          current.getFullYear(),
+          current.getMonth(),
+          current.getDate()
+        ).toISOString()
+      }
+    });
+
+    // This year
+    expense.thisYear.expense = await Expense.find({
+      ...expenseFilter,
+      date: {
+        $gt: new Date(
+          current.getFullYear() - 1,
+          current.getMonth(),
+          current.getDate()
+        ).toISOString(),
+        $lte: new Date(
+          current.getFullYear(),
+          current.getMonth(),
+          current.getDate()
+        ).toISOString()
+      }
+    });
+    expense.thisYear.income = await Expense.find({
+      ...incomeFilter,
+      date: {
+        $gt: new Date(
+          current.getFullYear() - 1,
+          current.getMonth(),
+          current.getDate()
+        ).toISOString(),
+        $lte: new Date(
+          current.getFullYear(),
+          current.getMonth(),
+          current.getDate()
+        ).toISOString()
+      }
+    });
+    res.send(expense);
   } catch (error) {
     console.error(error);
     res.status(500).send({ error: error });
