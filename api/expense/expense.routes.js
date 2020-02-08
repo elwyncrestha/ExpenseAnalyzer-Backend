@@ -279,7 +279,7 @@ router.get(`${URL}/chart/transaction-duration`, auth, async (req, res) => {
         ).toISOString()
       }
     });
-    res.send(expense);
+    res.send({ detail: expense });
   } catch (error) {
     console.error(error);
     res.status(500).send({ error: error });
