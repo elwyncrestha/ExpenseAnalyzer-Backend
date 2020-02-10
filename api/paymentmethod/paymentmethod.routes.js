@@ -117,4 +117,17 @@ router.get(`${URL}/status-count`, auth, async (req, res) => {
   }
 });
 
+/**
+ * Get by id.
+ */
+router.get(`${URL}/:id`, auth, async (req, res) => {
+  try {
+    const paymentMethod = await PaymentMethod.findById(req.params.id);
+    res.status(200).send({ detail: paymentMethod });
+  } catch (error) {
+    console.error(error);
+    res.status(400).send({ error: error });
+  }
+});
+
 module.exports = router;

@@ -115,4 +115,17 @@ router.get(`${URL}/status-count`, auth, async (req, res) => {
   }
 });
 
+/**
+ * Get by id.
+ */
+router.get(`${URL}/:id`, auth, async (req, res) => {
+  try {
+    const expenseStatus = await ExpenseStatus.findById(req.params.id);
+    res.status(200).send({ detail: expenseStatus });
+  } catch (error) {
+    console.error(error);
+    res.status(400).send({ error: error });
+  }
+});
+
 module.exports = router;

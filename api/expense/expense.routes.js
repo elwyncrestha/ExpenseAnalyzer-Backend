@@ -286,4 +286,17 @@ router.get(`${URL}/chart/transaction-duration`, auth, async (req, res) => {
   }
 });
 
+/**
+ * Get by id.
+ */
+router.get(`${URL}/:id`, auth, async (req, res) => {
+  try {
+    const expense = await Expense.findById(req.params.id);
+    res.status(200).send({ detail: expense });
+  } catch (error) {
+    console.error(error);
+    res.status(400).send({ error: error });
+  }
+});
+
 module.exports = router;
