@@ -291,7 +291,10 @@ router.get(`${URL}/chart/transaction-duration`, auth, async (req, res) => {
  */
 router.get(`${URL}/:id`, auth, async (req, res) => {
   try {
-    const expense = await Expense.findById(req.params.id);
+    const expense = await Expense.findById(req.params.id)
+      .populate("category")
+      .populate("paymentMethod")
+      .populate("status");
     res.status(200).send({ detail: expense });
   } catch (error) {
     console.error(error);
